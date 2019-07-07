@@ -1,0 +1,10 @@
+{
+  "keywords" : ["docker", "Django"],
+  "token": "BLIM5H6rTVW2hNQ33C8nFA",
+  "catalog" : 2,
+  "source" : "简书",
+  "MONGO_HOST" : "localhost",
+  "MONGO_PORT" : 27017,
+  "MONGO_DATABASE" : "TechHub",
+  "MONGO_COLLECTION" : "TechHub"
+}

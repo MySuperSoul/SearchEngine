@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# python compile file
+*.pyc
+
+# .idea
+crawler/JianShuCrawler/.idea
+
 # Log file
 *.log
 

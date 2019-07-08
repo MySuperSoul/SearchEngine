@@ -12,7 +12,13 @@ class ZhihucrawlerPipeline(object):
         with open('config.json', 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
-        self.mongo_client = pymongo.MongoClient(self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT'])
+        mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_1'],
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
+        )
+
+        self.mongo_client = pymongo.MongoClient(mongo_url)
         self.mongo_db = self.mongo_client[self.CONFIG['MONGO_DATABASE']]
         self.mongo_collection = self.mongo_db[self.CONFIG['MONGO_COLLECTION']]
 

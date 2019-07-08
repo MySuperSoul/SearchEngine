@@ -21,7 +21,6 @@ class ZhiHuSpider(scrapy.Spider):
 
     def SpiderStopped(self):
         for driver in zhihu_driver.driver_pools:
-            driver.quit()
             driver.close()
 
     def start_requests(self):

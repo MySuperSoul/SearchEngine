@@ -3,8 +3,10 @@
   "token": "BLIM5H6rTVW2hNQ33C8nFA",
   "catalog" : 2,
   "source" : "简书",
-  "MONGO_HOST" : "localhost",
-  "MONGO_PORT" : 27017,
+  "MONGO_HOST" : "49.234.90.146",
+  "MONGO_PORT_1" : 37017,
+  "MONGO_PORT_2" : 47017,
+  "MONGO_PORT_3" : 57017,
   "MONGO_DATABASE" : "TechHub",
   "MONGO_COLLECTION" : "TechHub"
 }

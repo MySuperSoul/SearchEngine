@@ -8,7 +8,7 @@ import pymongo
 import json
 
 class ZhihucrawlerPipeline(object):
-    def __init__(self):
+    def open_spider(self, spider):
         with open('config.json', 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
@@ -26,3 +26,6 @@ class ZhihucrawlerPipeline(object):
         document = item
         document = document.to_dict()
         self.mongo_collection.insert_one(document=document)
+
+    def close_spider(self, spider):
+        self.mongo_client.close()

@@ -1,0 +1,15 @@
+server:
+  port:
+    7000
+
+debug:
+  true
+
+spring:
+  application:
+    name: techhub
+
+
+SolrJ:
+  url: http://49.234.90.146:8983/solr
+  coreName: TechHub

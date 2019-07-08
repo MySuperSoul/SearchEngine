@@ -49,7 +49,8 @@ class DemoSpider(scrapy.Spider):
         if self.keywords_map[response.meta['keyword']] == False:
             result_tag = soup.find('div', class_='result')
             result = int(result_tag.text.split()[0])
-            for page in range(2, 4):
+            total_pages = result // 10
+            for page in range(2, total_pages):
                 yield Request(self.start_url % (response.meta['keyword'], page), callback=self.parse_page, meta={
                     'key' : 'page',
                     'keyword' : response.meta['keyword']

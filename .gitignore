@@ -11,6 +11,14 @@ crawler/JianShuCrawler/.idea
 crawler/ZhiHuCrawler/.idea
 crawler/GithubDemoCrawler/.idea
 crawler/STOCrawler/.idea
+crawler/iteyecrawler/.idea
+
+# DS_STORE
+.DS_Store
+*/.DS_Store
+
+# chrome driver
+crawler/iteyecrawler/chromedriver
 
 # Log file
 *.log

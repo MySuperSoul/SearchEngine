@@ -1,24 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from CrawlerUtils.BaseDriver import CrawlerBaseDriver
 import random
 import time
 
-class Driver():
+class Driver(CrawlerBaseDriver):
     def __init__(self):
-        self.delay_time = 2
-        self.driver_pool_number = 3
-        self.driver_option = Options()
-        self.driver_option.add_argument('--headless')
-        self.driver_pools = []
-
-        for i in range(self.driver_pool_number):
-            self.driver_pools.append(webdriver.Chrome(chrome_options=self.driver_option))
-
-    def GenerateNewDriver(self):
-        return webdriver.Chrome(chrome_options=self.driver_option)
+        super(Driver, self).__init__()
 
     def GetValidDriverForPage(self, url, key):
         random_pos = random.randint(0, self.driver_pool_number - 1)

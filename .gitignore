@@ -5,6 +5,8 @@
 *.pyc
 
 # .idea
+crawler/.idea
+crawler/CrawlerUtils/.idea
 crawler/JianShuCrawler/.idea
 crawler/ZhiHuCrawler/.idea
 

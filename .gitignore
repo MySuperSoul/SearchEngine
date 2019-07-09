@@ -19,6 +19,7 @@ crawler/iteyecrawler/.idea
 
 # chrome driver
 crawler/iteyecrawler/chromedriver
+crawler/iteyecrawler/zhihucrawler/chromedriver
 
 # Log file
 *.log

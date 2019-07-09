@@ -10,6 +10,7 @@ crawler/CrawlerUtils/.idea
 crawler/JianShuCrawler/.idea
 crawler/ZhiHuCrawler/.idea
 crawler/GithubDemoCrawler/.idea
+crawler/STOCrawler/.idea
 
 # Log file
 *.log

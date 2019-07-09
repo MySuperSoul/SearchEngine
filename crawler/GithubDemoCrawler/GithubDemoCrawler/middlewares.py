@@ -6,7 +6,8 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from .driver import github_driver
+from scrapy.http import HtmlResponse, Response
 
 class GithubdemocrawlerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -69,16 +70,12 @@ class GithubdemocrawlerDownloaderMiddleware(object):
         return s
 
     def process_request(self, request, spider):
-        # Called for each request that goes through the downloader
-        # middleware.
+        url = request.url
+        key = request.meta['key']
 
-        # Must either:
-        # - return None: continue processing this request
-        # - or return a Response object
-        # - or return a Request object
-        # - or raise IgnoreRequest: process_exception() methods of
-        #   installed downloader middleware will be called
-        return None
+        driver = github_driver.GetValidDriverForPage(url=url, key=key)
+        text = driver.page_source
+        return HtmlResponse(url=url, request=request, body=text, encoding='utf-8')
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

@@ -12,11 +12,13 @@ class GithubdemocrawlerPipeline(object):
         with open('config.json', 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
-        mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
-            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_1'],
-            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
-            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
-        )
+        # mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
+        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_1'],
+        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
+        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
+        # )
+
+        mongo_url = 'mongodb://localhost:27017'
 
         self.mongo_client = pymongo.MongoClient(mongo_url)
         self.mongo_db = self.mongo_client[self.CONFIG['MONGO_DATABASE']]
@@ -25,6 +27,7 @@ class GithubdemocrawlerPipeline(object):
     def process_item(self, item, spider):
         document = item
         document = document.to_dict()
+        print('Finish {}'.format(document['url']))
         self.mongo_collection.insert_one(document=document)
 
     def close_spider(self, spider):

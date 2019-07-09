@@ -9,6 +9,25 @@ import scrapy
 
 
 class StocrawlerItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    title = scrapy.Field()
+    summary = scrapy.Field()
+    url = scrapy.Field()
+    tags = scrapy.Field()
+    catalog = scrapy.Field()
+    content = scrapy.Field()
+    source = scrapy.Field()
+    date = scrapy.Field()
+    author = scrapy.Field()
+
+    def to_dict(self):
+        return {
+            'title': self.get('title'),
+            'summary': self.get('summary'),
+            'url': self.get('url'),
+            'tags': self.get('tags'),
+            'catalog': self.get('catalog'),
+            'content': self.get('content'),
+            'source': self.get('source'),
+            'date': self.get('date'),
+            'author': self.get('author')
+        }

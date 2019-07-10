@@ -6,7 +6,8 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from .driver import sto_driver
+from scrapy.http import HtmlResponse
 
 class StocrawlerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -69,16 +70,14 @@ class StocrawlerDownloaderMiddleware(object):
         return s
 
     def process_request(self, request, spider):
-        # Called for each request that goes through the downloader
-        # middleware.
+        url = request.url
+        key = request.meta['key']
+        driver = sto_driver.GetValidDriverForPage(url=url, key=key)
 
-        # Must either:
-        # - return None: continue processing this request
-        # - or return a Response object
-        # - or return a Request object
-        # - or raise IgnoreRequest: process_exception() methods of
-        #   installed downloader middleware will be called
-        return None
+        if key == 'page':
+            return HtmlResponse(url=url, body=driver.page_source, encoding='utf-8', request=request)
+        else:
+            pass
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

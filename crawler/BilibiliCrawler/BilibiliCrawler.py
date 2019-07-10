@@ -4,7 +4,7 @@ import time
 import pymongo
 import threading
 
-start_url = 'https://so.csdn.net/so/search/s.do?p={1}&q={0}&t=blog&domain=&o=&s=&u=&l=&f=&rbg=0'
+start_url = 'https://search.bilibili.com/video?keyword={0}&page={1}'
 
 headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -40,18 +40,16 @@ def parse_content(url, key):
     result = requests.get('http://api.url2io.com/article', params=params)
     result = result.json()
 
-    # print(result)
-
     item = {}
     item["url"] = url
-    item["catalog"] = 2
+    item["catalog"] = 4
     item["title"] = result["title"]
     item["content"] = result["text"]
-    item["source"] = "CSDN"
+    item["source"] = "Bilibili"
     item["date"] = result["date"]
 
     item["summary"] = ""
-    item["author"] = etree.HTML(get_html(url)).xpath('//a[@class="follow-nickName"]')[0].text
+    item["author"] = etree.HTML(get_html(url)).xpath('//a[@class="username"]')[0].text
     item["tags"] = [key, ]
 
     collection.insert_one(document=item)
@@ -61,11 +59,10 @@ def parse_content(url, key):
 def parse_page_url(url):
     html = get_html(url)
     html = etree.HTML(html)
-    a_list = html.xpath('//dt//a')
+    a_list = html.xpath('//li[@class="video matrix"]/a')
     result = []
-    for i in range(0, len(a_list), 2):
-        href = a_list[i].xpath('./@href')[0]
-        result.append(href)
+    for a in a_list:
+        result.append("https:" + a.xpath('./@href')[0])
     return result
 
 
@@ -74,10 +71,7 @@ def parse_page(url, key):
     result = []
     html = get_html(url)
     html = etree.HTML(html)
-    span = html.xpath('//span[@class="page-nav"]')[0]
-    a_list = span.xpath('./a/@page_num')
-    a_list = list(map(int, a_list))
-    total_page = max(a_list)
+    total_page = int(html.xpath('//button[@class="pagination-btn"]')[0].text)
     for i in range(1, total_page + 1):
         url = start_url.format(key, i)
         tmp_result = parse_page_url(url)
@@ -152,9 +146,10 @@ def main(key_list):
 if __name__ == "__main__":
     key_list = ["Spring Cloud"]
     main(key_list)
-    # url = "https://so.csdn.net/so/search/s.do?p=2&q=Spring+cloud&t=blog&domain=&o=&s=&u=&l=&f=&rbg=0"
-    # url = 'https://blog.csdn.net/catoop/article/details/50955949'
     # parse_content(url, "Spring cloud")
     # parse_page_url(url)
     # result = parse_page(get_html(url), "Spring+cloud")
     # print(len(result))
+    # url = "https://www.bilibili.com/video/av56799177?from=search&seid=865120776882731184"
+    # key = "spring cloud"
+    # parse_content(url, "Spring cloud")

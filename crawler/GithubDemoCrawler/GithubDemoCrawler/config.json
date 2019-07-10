@@ -1,5 +1,8 @@
 {
-  "keywords" : ["docker", "Django"],
+  "keywords" : ["Spring Cloud Config", "Spring Cloud Bus", "Eureka", "Hystrix", "Zuul", "Archaius", "Consul",
+  "Spring Cloud for Cloud Foundry", "Spring Cloud Sleuth", "Spring Cloud Data Flow", "Spring Cloud Security",
+  "Spring Cloud Zookeeper", "Spring Cloud Stream", "Spring Cloud CLI", "Ribbon", "Turbine", "Feign", "Spring Cloud Task",
+  "Spring Cloud Connectors", "Spring Cloud Cluster", "Spring Cloud Starters"],
   "token": "BLIM5H6rTVW2hNQ33C8nFA",
   "source" : "Github",
   "MONGO_HOST" : "49.234.90.146",

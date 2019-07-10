@@ -1,15 +1,17 @@
 import scrapy
 import json
 from ..driver import sto_driver
+from ..items import StocrawlerItem
 from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
 from lxml import etree
 from CrawlerUtils.Catalog import DocCatalog
+from CrawlerUtils.Utils import Utils
 
 class STOSpider(scrapy.Spider):
     name = 'sto-spider'
-    start_url = 'https://stackoverflow.com/search?page=%d&q=%s'
+    start_url = 'https://stackoverflow.com/search?page=%d&q=%s&tab=Relevance'
     host = 'https://stackoverflow.com'
 
     def __init__(self):
@@ -46,5 +48,15 @@ class STOSpider(scrapy.Spider):
             })
 
     def parse_content(self, response):
-        pass
+        content = Utils.GetInfoDicFromBytes(content=response.body)
+
+        content['catalog'] = DocCatalog.CATALOG_QA
+        content['source'] = self.CONFIG['source']
+        content['summary'] = ''
+
+        document = StocrawlerItem()
+        document = Utils.FeedDocument(document=document, info_dic=content)
+
+        yield document
+
 

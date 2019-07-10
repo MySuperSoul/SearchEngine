@@ -7,7 +7,10 @@
 
 from scrapy import signals
 from .driver import sto_driver
-from scrapy.http import HtmlResponse
+from scrapy.http import HtmlResponse, Response
+from CrawlerUtils.Utils import Utils
+from lxml import etree
+import json
 
 class StocrawlerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -77,7 +80,31 @@ class StocrawlerDownloaderMiddleware(object):
         if key == 'page':
             return HtmlResponse(url=url, body=driver.page_source, encoding='utf-8', request=request)
         else:
-            pass
+            content = Utils.GetPageContent(token=request.meta['token'], url=url)
+
+            page = sto_driver.GetValidDriverForPage(url=url, key=key).page_source
+            selector = Utils.GetSelectorForText(page)
+
+            date_tag = selector.xpath('//p[@class="label-key" and (@title)]')
+            date = date_tag[0].get('title')
+            content['date'] = date[:-1]
+
+            author_tag = selector.xpath('//div[@class="user-details"]//a')
+            author = author_tag[0].text
+            content['author'] = author
+
+            title_tag = selector.xpath('//a[@class="question-hyperlink"]')
+            title = title_tag[0].text
+            content['title'] = title
+
+            tags = selector.xpath('//a[@class="post-tag js-gps-track"]')
+            doc_tags = []
+            for tag in tags: doc_tags.append(tag.text)
+            content['tags'] = doc_tags
+
+            content['text'] = content['text'].strip().strip('\n')
+
+            return Response(url=url, request=request, body=Utils.GetResponseForJson(content=content))
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

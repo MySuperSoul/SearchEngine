@@ -12,12 +12,12 @@ class StocrawlerPipeline(object):
         with open('config.json', 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
-        # mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
-        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_1'],
-        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
-        #     self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
-        # )
-        mongo_url = 'mongodb://localhost:27017'
+        mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_1'],
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
+            self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
+        )
+        # mongo_url = 'mongodb://localhost:27017'
 
         self.mongo_client = pymongo.MongoClient(mongo_url)
         self.mongo_db = self.mongo_client[self.CONFIG['MONGO_DATABASE']]
@@ -27,6 +27,7 @@ class StocrawlerPipeline(object):
         document = item
         document = document.to_dict()
         self.mongo_collection.insert_one(document=document)
+        print('Finish "{}"'.format(document['title']))
 
     def close_spider(self, spider):
         self.mongo_client.close()

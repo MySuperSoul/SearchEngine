@@ -1,0 +1,4 @@
+scrapy
+selenium
+requests
+lxml

@@ -51,7 +51,7 @@ class STOSpider(scrapy.Spider):
         if self.keywords_map[response.meta['keyword']] == False:
             page_number_tags = selector.xpath('//span[@class="page-numbers"]')
             pages = int(page_number_tags[-1].text)
-            for page in range(2, pages + 1):
+            for page in range(2, min(pages + 1, 31)):
                 yield Request(url=self.start_url % (page, response.meta['keyword']),
                               callback=self.parse_page,
                               meta={

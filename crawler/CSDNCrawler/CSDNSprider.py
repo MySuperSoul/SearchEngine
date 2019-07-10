@@ -42,6 +42,12 @@ def parse_content(url, key):
 
     # print(result)
 
+    try:
+        result["title"]
+    except Exception as e:
+        print(e)
+        return
+
     item = {}
     item["url"] = url
     item["catalog"] = 2

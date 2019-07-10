@@ -40,6 +40,12 @@ def parse_content(url, key):
     result = requests.get('http://api.url2io.com/article', params=params)
     result = result.json()
 
+    try:
+        result["title"]
+    except Exception as e:
+        print(e)
+        return
+
     item = {}
     item["url"] = url
     item["catalog"] = 4
@@ -49,8 +55,12 @@ def parse_content(url, key):
     item["date"] = result["date"]
 
     item["summary"] = ""
-    item["author"] = etree.HTML(get_html(url)).xpath('//a[@class="username"]')[0].text
-    item["tags"] = [key, ]
+
+    etree_tmp = etree.HTML(get_html(url))
+    item["author"] = etree_tmp.xpath('//a[@class="username"]')[0].text
+    item["tags"] = []
+    for i in etree_tmp.xpath('//li[@class="tag"]/a'):
+        item["tags"].append(i.text)
 
     collection.insert_one(document=item)
 

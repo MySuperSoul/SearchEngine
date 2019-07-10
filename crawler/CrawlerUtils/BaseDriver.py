@@ -5,7 +5,7 @@ import random
 class CrawlerBaseDriver():
     def __init__(self):
         self.delay_time = 1
-        self.driver_pool_number = 2
+        self.driver_pool_number = 3
         self.driver_option = Options()
         self.driver_option.add_argument('--headless')
         prefs = {"profile.managed_default_content_settings.images": 2}

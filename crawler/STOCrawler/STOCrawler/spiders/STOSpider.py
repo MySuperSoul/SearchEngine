@@ -47,6 +47,19 @@ class STOSpider(scrapy.Spider):
                 'token' : self.CONFIG['token']
             })
 
+        # get total pages
+        if self.keywords_map[response.meta['keyword']] == False:
+            page_number_tags = selector.xpath('//span[@class="page-numbers"]')
+            pages = int(page_number_tags[-1].text)
+            for page in range(2, pages + 1):
+                yield Request(url=self.start_url % (page, response.meta['keyword']),
+                              callback=self.parse_page,
+                              meta={
+                                  'key' : 'page',
+                                  'keyword' : response.meta['keyword']
+                              })
+            self.keywords_map[response.meta['keyword']] = True
+
     def parse_content(self, response):
         content = Utils.GetInfoDicFromBytes(content=response.body)
 

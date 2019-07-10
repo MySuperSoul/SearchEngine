@@ -21,13 +21,13 @@ class StocrawlerItem(scrapy.Item):
 
     def to_dict(self):
         return {
-            'title': self.get('title'),
-            'summary': self.get('summary'),
-            'url': self.get('url'),
-            'tags': self.get('tags'),
-            'catalog': self.get('catalog'),
-            'content': self.get('content'),
-            'source': self.get('source'),
-            'date': self.get('date'),
+            'title': self.get('title')[0],
+            'summary': self.get('summary')[0],
+            'url': self.get('url')[0],
+            'tags': self.get('tags')[0],
+            'catalog': self.get('catalog')[0],
+            'content': self.get('content')[0],
+            'source': self.get('source')[0],
+            'date': self.get('date')[0],
             'author': self.get('author')
         }

@@ -1,5 +1,5 @@
 {
-  "keywords" : ["docker", "Django"],
+  "keywords" : ["docker-compose", "Django-websocket"],
   "token": "BLIM5H6rTVW2hNQ33C8nFA",
   "source" : "StackOverFlow",
   "MONGO_HOST" : "49.234.90.146",

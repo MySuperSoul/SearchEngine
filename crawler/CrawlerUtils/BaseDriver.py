@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import InvalidSessionIdException
 import random
+import time
 
 class CrawlerBaseDriver():
     def __init__(self):
@@ -8,6 +10,10 @@ class CrawlerBaseDriver():
         self.driver_pool_number = 5
         self.driver_option = Options()
         self.driver_option.add_argument('--headless')
+        self.driver_option.add_argument('--no-sandbox')
+        self.driver_option.add_argument('--window-size=1420,1080')
+        self.driver_option.add_argument('--disable-gpu')
+
         prefs = {"profile.managed_default_content_settings.images": 2}
         self.driver_option.add_experimental_option("prefs", prefs)
         self.driver_pools = []
@@ -30,6 +36,10 @@ class CrawlerBaseDriver():
 
                 control_mode = True
                 return random_driver
+
+            except InvalidSessionIdException as e:
+                time.sleep(0.5)
+                continue
 
             except Exception as e:
                 random_driver.close()

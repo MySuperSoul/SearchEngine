@@ -27,7 +27,6 @@ class ZhiHuDriver(CrawlerBaseDriver):
                 return random_driver
 
             except Exception as e:
-                random_driver.quit()
                 random_driver.close()
                 random_driver = self.GenerateNewDriver()
                 random_driver.implicitly_wait(1)

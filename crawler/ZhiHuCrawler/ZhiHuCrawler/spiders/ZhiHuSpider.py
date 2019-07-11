@@ -1,5 +1,6 @@
 import scrapy
 import json
+import os
 from scrapy import signals
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy.http import Request
@@ -13,7 +14,8 @@ class ZhiHuSpider(scrapy.Spider):
     start_url = 'https://www.zhihu.com/search?type=content&q=%s'
 
     def __init__(self):
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         dispatcher.connect(self.SpiderStopped, signals.engine_stopped)

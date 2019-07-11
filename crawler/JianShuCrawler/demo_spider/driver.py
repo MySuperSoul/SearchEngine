@@ -28,7 +28,6 @@ class Driver(CrawlerBaseDriver):
                 return random_driver
 
             except Exception as e:
-                random_driver.quit()
                 random_driver.close()
                 random_driver = self.GenerateNewDriver()
                 time.sleep(self.delay_time)

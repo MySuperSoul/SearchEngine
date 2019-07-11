@@ -1,5 +1,6 @@
 import scrapy
 import json
+import os
 from scrapy.http import Request
 from bs4 import BeautifulSoup
 from ..items import DemoSpiderItem
@@ -13,7 +14,8 @@ class DemoSpider(scrapy.Spider):
     host = 'https://www.jianshu.com'
 
     def __init__(self):
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
         self.keywords_map = {keyword: False for keyword in self.CONFIG['keywords']}
 

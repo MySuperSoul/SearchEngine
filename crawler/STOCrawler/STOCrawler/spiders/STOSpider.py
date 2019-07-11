@@ -1,5 +1,6 @@
 import scrapy
 import json
+import os
 from ..driver import sto_driver
 from ..items import StocrawlerItem
 from scrapy import signals
@@ -18,7 +19,8 @@ class STOSpider(scrapy.Spider):
     def __init__(self):
         super(STOSpider, self).__init__()
 
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         self.keywords_map = {keyword: False for keyword in self.CONFIG['keywords']}

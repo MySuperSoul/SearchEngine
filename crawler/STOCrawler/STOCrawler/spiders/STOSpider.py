@@ -12,6 +12,7 @@ from CrawlerUtils.Utils import Utils
 class STOSpider(scrapy.Spider):
     name = 'sto-spider'
     start_url = 'https://stackoverflow.com/search?page=%d&q=%s&tab=Relevance'
+    start_tag_url = 'https://stackoverflow.com/questions/tagged/%s?page=%d'
     host = 'https://stackoverflow.com'
 
     def __init__(self):
@@ -31,7 +32,8 @@ class STOSpider(scrapy.Spider):
         for keyword in self.CONFIG['keywords']:
             yield Request(url=self.start_url % (1, keyword), callback=self.parse_page, meta={
                 'key' : 'page',
-                'keyword' : keyword
+                'keyword' : keyword,
+                'tag' : 0
             })
 
     def parse_page(self, response):
@@ -49,15 +51,33 @@ class STOSpider(scrapy.Spider):
 
         # get total pages
         if self.keywords_map[response.meta['keyword']] == False:
+            # Judge whether tagged problem
+            tagged_flag = False
+            result_tag = selector.xpath('//h1[contains(@class, "grid--cell")]')[0]
+            result = str(result_tag.text)
+            if result.find('tagged') != -1:
+                tagged_flag = True
+
+            # calculate all pages
             page_number_tags = selector.xpath('//span[@class="page-numbers"]')
             pages = int(page_number_tags[-1].text)
-            for page in range(2, min(pages + 1, 31)):
-                yield Request(url=self.start_url % (page, response.meta['keyword']),
-                              callback=self.parse_page,
-                              meta={
-                                  'key' : 'page',
-                                  'keyword' : response.meta['keyword']
-                              })
+            for page in range(2, min(pages + 1, 101)):
+                if tagged_flag == False:
+                    yield Request(url=self.start_url % (page, response.meta['keyword']),
+                                  callback=self.parse_page,
+                                  meta={
+                                      'key' : 'page',
+                                      'tag' : 0,
+                                      'keyword' : response.meta['keyword']
+                                  })
+                else:
+                    yield Request(url=self.start_tag_url % (response.meta['keyword'], page),
+                                  callback=self.parse_page,
+                                  meta={
+                                      'key' : 'page',
+                                      'tag' : 1,
+                                      'keyword' : response.meta['keyword']
+                                  })
             self.keywords_map[response.meta['keyword']] = True
 
     def parse_content(self, response):

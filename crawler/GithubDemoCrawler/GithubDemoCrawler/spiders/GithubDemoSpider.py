@@ -12,6 +12,7 @@ class GithubDemoSpider(scrapy.Spider):
     name = 'github-spider'
     start_url = 'https://github.com/search?p=%d&q=%s&type=Repositories'
     host = 'https://github.com'
+    keywords_map = {}
 
     def __init__(self):
         super(GithubDemoSpider, self).__init__()
@@ -19,7 +20,9 @@ class GithubDemoSpider(scrapy.Spider):
         with open('config.json', 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
-        self.keywords_map = {keyword: False for keyword in self.CONFIG['keywords']}
+        for keyword in self.CONFIG['keywords']:
+            self.keywords_map[keyword] = False
+
         dispatcher.connect(self.SpiderStopped, signals.engine_stopped)
 
     def SpiderStopped(self):

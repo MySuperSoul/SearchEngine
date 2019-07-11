@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from CrawlerUtils.BaseDriver import CrawlerBaseDriver
+from selenium.common.exceptions import InvalidSessionIdException
 import random
 import time
 
@@ -26,6 +27,10 @@ class Driver(CrawlerBaseDriver):
                     )
                 random_driver.execute_script('window.scrollTo(0, 100000)')
                 return random_driver
+
+            except InvalidSessionIdException as e:
+                time.sleep(0.5)
+                continue
 
             except Exception as e:
                 random_driver.close()

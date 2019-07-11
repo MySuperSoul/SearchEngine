@@ -27,7 +27,7 @@ class GithubdemocrawlerItem(scrapy.Item):
             'tags': self.get('tags'),
             'catalog': self.get('catalog'),
             'content': self.get('content'),
-            'source': self.get('source'),
+            'source': self.get('source')[0],
             'date': self.get('date'),
             'author': self.get('author')
         }

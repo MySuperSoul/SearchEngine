@@ -10,5 +10,5 @@
   "MONGO_PORT_2" : 47017,
   "MONGO_PORT_3" : 57017,
   "MONGO_DATABASE" : "TechHub",
-  "MONGO_COLLECTION" : "TechHub"
+  "MONGO_COLLECTION" : "github"
 }

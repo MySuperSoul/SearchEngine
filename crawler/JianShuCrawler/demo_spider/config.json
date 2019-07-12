@@ -1,7 +1,5 @@
 {
-  "keywords" : ["Spring Cloud Sleuth", "Spring Cloud Data Flow", "Spring Cloud Security",
-  "Spring Cloud Zookeeper", "Spring Cloud Stream", "Spring Cloud CLI", "Ribbon", "Turbine", "Feign", "Spring Cloud Task",
-  "Spring Cloud Connectors", "Spring Cloud Cluster", "Spring Cloud Starters"],
+  "keywords" : ["docker","docker-compose","k8s","Apache","Nginx","Tomcat","Websockets","GraphQL","Neo4j","OrientDB"],
   "token": "BLIM5H6rTVW2hNQ33C8nFA",
   "catalog" : 2,
   "source" : "简书",

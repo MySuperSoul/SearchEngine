@@ -7,7 +7,7 @@ import time
 class CrawlerBaseDriver():
     def __init__(self):
         self.delay_time = 1
-        self.driver_pool_number = 5
+        self.driver_pool_number = 1
         self.driver_option = Options()
         self.driver_option.add_argument('--headless')
         self.driver_option.add_argument('--no-sandbox')

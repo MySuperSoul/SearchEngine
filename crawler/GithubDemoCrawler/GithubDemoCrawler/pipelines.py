@@ -6,10 +6,12 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import json
+import os
 
 class GithubdemocrawlerPipeline(object):
     def open_spider(self, spider):
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(

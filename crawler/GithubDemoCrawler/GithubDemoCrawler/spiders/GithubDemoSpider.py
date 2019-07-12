@@ -1,5 +1,6 @@
 import scrapy
 import json
+import os
 from scrapy import signals
 from scrapy.http import Request
 from scrapy.xlib.pydispatch import dispatcher
@@ -17,7 +18,8 @@ class GithubDemoSpider(scrapy.Spider):
     def __init__(self):
         super(GithubDemoSpider, self).__init__()
 
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         for keyword in self.CONFIG['keywords']:
@@ -52,10 +54,10 @@ class GithubDemoSpider(scrapy.Spider):
 
         # crawl pages
         if self.keywords_map[response.meta['keyword']] == False:
-            last_page = selector.xpath('//div[contains(@class, "pagination") and contains(@class, "d-flex")]//a')
-            total_page = int(last_page[len(last_page) - 2].text)
+            # last_page = selector.xpath('//em[@class="current"]')
+            # total_page = int(last_page[0].get('data-total-pages'))
 
-            for page in range(2, total_page):
+            for page in range(2, 20):
                 yield Request(url=self.start_url % (page, response.meta['keyword']), callback=self.parse_page, meta={
                     'key' : 'page',
                     'keyword' : response.meta['keyword']

@@ -8,6 +8,7 @@
 from scrapy import signals
 from scrapy.http import HtmlResponse, Response
 from .driver import zhihu_driver
+from lxml import etree
 import requests
 import json
 
@@ -90,9 +91,16 @@ class ZhihucrawlerDownloaderMiddleware(object):
 
                 result = requests.get('http://api.url2io.com/article', params=params)
                 content = result.json()
-                author = zhihu_driver.GetValidDriverForPage(url, key).find_element_by_xpath(
+                driver = zhihu_driver.GetValidDriverForPage(url, key)
+                author = driver.find_element_by_xpath(
                     '//div[@class="AuthorInfo-content"]//a[@class="UserLink-link"]'
                 ).text
+                tags_tags = driver.find_elements_by_xpath(
+                    '//div[@class="Tag Topic"]//div[@class="Popover"]/div'
+                )
+                tags = []
+                for tag in tags_tags: tags.append(tag.text)
+                content['tags'] = tags
             else:
                 driver = zhihu_driver.GetValidDriverForPage(url, key)
                 p_tags = driver.find_elements_by_xpath('//p')
@@ -103,6 +111,11 @@ class ZhihucrawlerDownloaderMiddleware(object):
                 content['text'] = text
                 title_tag = driver.find_element_by_xpath('//div[@class="QuestionHeader"]//h1[@class="QuestionHeader-title"]')
                 content['title'] = title_tag.text
+
+                tags_tags = driver.find_elements_by_xpath('//div[@class="Tag QuestionTopic"]//div[@class="Popover"]/div')
+                tags = []
+                for tag in tags_tags: tags.append(tag.text)
+                content['tags'] = tags
                 content['date'] = ''
                 author = ''
             content['author'] = author

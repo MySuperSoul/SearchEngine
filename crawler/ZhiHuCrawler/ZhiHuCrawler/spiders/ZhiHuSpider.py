@@ -65,7 +65,7 @@ class ZhiHuSpider(scrapy.Spider):
             info_dic['catalog'] = DocCatalog.CATALOG_QA
 
         keyword = response.meta['keyword']
-        info_dic['tags'] = [keyword]
+        # info_dic['tags'] = [keyword]
         info_dic['source'] = self.CONFIG['source']
 
         document = ZhihucrawlerItem()

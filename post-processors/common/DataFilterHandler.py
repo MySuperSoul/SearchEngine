@@ -2,9 +2,10 @@ from common.Config import MongoConfig
 from common.SimHash import SimHashFilter
 
 class DataFilterHandler():
-    def __init__(self, database_name, collection_name, use_localhost=False):
+    def __init__(self, database_name, collection_name, use_localhost=False, use_similarity_filter=True):
         self.mongo_config = MongoConfig(database_name=database_name, collection_name=collection_name, use_localhost=use_localhost)
         self.collection_cursor = self.mongo_config.GetMongoCursor()
+        self.use_similarity_filter = use_similarity_filter
         self.similarity_filter = SimHashFilter(128)
         self.count = 0
         self.code_list = []
@@ -27,7 +28,11 @@ class DataFilterHandler():
             url_set.add(url)
 
             # then filter similarity threshold
-            self.FilterSimilarity(cursor, url, content)
+            if self.use_similarity_filter == True:
+                self.FilterSimilarity(cursor, url, content)
+            else:
+                print('Valid document for position: {}'.format(self.count))
+                self.count += 1
 
         self.mongo_config.CloseConnection()
         print('Data filter done.')

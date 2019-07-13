@@ -243,6 +243,6 @@ if __name__ == "__main__":
     time.sleep(30)
 
     key_list = ["Spring Cloud Config", "Spring Cloud Bus", "Eureka", "Hystrix", "Zuul", "Archaius", "Consul", "Spring Cloud for Cloud Foundry", "Spring Cloud Sleuth", "Spring Cloud Data Flow", "Spring Cloud Security", "Spring Cloud Zookeeper", "Spring Cloud Stream", "Spring Cloud CLI", "Ribbon", "Turbine", "Feign", "Spring Cloud Task", "Spring Cloud Connectors", "Spring Cloud Cluster", "Spring Cloud Starters"]
-    sec_key_list = ["maven", "MySQL","Spring Boot", "Spring Security", "Spring Session", "MongoDB","Redis","RESTful API","OAuth","Token Authentication","JWT","RabbitMQ","Solr","Elasitic search","docker","docker-compose","k8s","Apache","Nginx","Tomcat","Websockets","GraphQL","Neo4j","OrientDB"]
-    key_list.extend(sec_key_list)
+    # sec_key_list = ["maven", "MySQL","Spring Boot", "Spring Security", "Spring Session", "MongoDB","Redis","RESTful API","OAuth","Token Authentication","JWT","RabbitMQ","Solr","Elasitic search","docker","docker-compose","k8s","Apache","Nginx","Tomcat","Websockets","GraphQL","Neo4j","OrientDB"]
+    # key_list.extend(sec_key_list)
     main(key_list)

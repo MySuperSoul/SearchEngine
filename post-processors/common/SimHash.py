@@ -23,11 +23,11 @@ class SimHashFilter(object):
 
     def IsSimilarByText(self, text_1, text_2):
         similarity = self.Distance(text_1, text_2)
-        return (similarity > 0.9, similarity)
+        return (similarity > 0.95, similarity)
 
     def IsSimilarByCode(self, code_1, code_2):
         similarity = (100 - self.HammingDistance(code_1, code_2) * 100 / self.hash_bits) / 100
-        return (similarity > 0.9, similarity)
+        return (similarity > 0.95, similarity)
 
     def Distance(self, text_1, text_2):
         code_1 = self.GetCodeForText(text_1)

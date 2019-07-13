@@ -4,6 +4,7 @@ import time
 import pymongo
 import threading
 import random
+import GetIP
 
 start_url = 'https://search.bilibili.com/video?keyword={0}&page={1}'
 
@@ -12,18 +13,12 @@ headers = {
             "accept-encoding": "gzip, deflate, br",
             "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
-            # "Connection": "close"
+            "Connection": "close"
            }
 
-connection = pymongo.MongoClient('mongodb://49.234.90.146:37017,49.234.90.146:47017,49.234.90.146:57017', connect=False)
+connection = pymongo.MongoClient('mongodb://49.234.90.146:37017,49.234.90.146:47017,49.234.90.146:57017')
 db = connection["TechHub"]
 collection = db["Bilibili"]
-
-
-file_name = 1
-f = open("./Bilibili/" + str(file_name), "w")
-total_num = 0
-file_lock = threading.Lock()
 
 
 def LoadUserAgents(uafile):
@@ -66,51 +61,22 @@ def get_html(url):
 
 # 根据url、key得到页面内容
 def parse_content(url, key):
-    token = "FOGuPOBcR-eNuQ-U4SB5-w"
-    fields = ','.join(['text', ])
-    params = {
-        'token': token,
-        'url': url,
-        'fields': fields
-    }
-
-    retry = 5
-    while retry > 0:
-        try:
-            result = requests.get('http://api.url2io.com/article', params=params, headers=headers)
-        except Exception as e:
-            print(e)
-            retry = retry - 1
-            time.sleep(1)
-            continue
-
-        if result.status_code == 200:
-            break
-        else:
-            retry = retry - 1
-            time.sleep(1)
-    else:
-        print("api error")
-        return
-
-    result = result.json()
-
-    item = {}
-    item["url"] = url
-    item["catalog"] = 4
-    item["title"] = result["title"]
-    item["content"] = result["text"]
-    item["source"] = "Bilibili"
-    item["date"] = result["date"]
-    item["summary"] = ""
-
-    tmp_html = get_html(url)
+    global ip_thread
+    tmp_html = ip_thread.get_html(url)
     if tmp_html == "":
         print("parse_content error")
         return
 
     try:
         etree_tmp = etree.HTML(tmp_html)
+        item = {}
+        item["url"] = url
+        item["catalog"] = 4
+        item["title"] = etree_tmp.xpath('//h1/span')[0].text
+        item["content"] = ""
+        item["source"] = "Bilibili"
+        item["date"] = etree_tmp.xpath('//div[@class="video-data"]')[0].xpath('./span')[1].text
+        item["summary"] = ""
         item["author"] = etree_tmp.xpath('//a[contains(@class,"username")]')[0].text
         item["tags"] = []
         for i in etree_tmp.xpath('//li[@class="tag"]/a'):
@@ -120,27 +86,26 @@ def parse_content(url, key):
         print("解析最后: " + url)
         return
 
-    # collection.insert_one(document=item)
-    global file_lock
-    global total_num
-    global file_name
-    global f
-    if file_lock.acquire():
-        f.writelines(str(item) + "\n")
-        total_num = total_num + 1
-        if total_num == 1000:
-            f.close()
-            file_name = file_name + 1
-            f = open("./Bilibili/" + str(file_name), "w")
-
-        file_lock.release()
-    print("ok")
+    collection.insert_one(document=item)
+    retry = 5
+    while retry > 0:
+        try:
+            collection.insert_one(document=item)
+            print("ok")
+            return
+        except Exception as e:
+            time.sleep(3)
+            retry = retry - 1
+    else:
+        print("mongodb 插入超时")
+        return
 
 
 # 每页爬下文章链接，返回这页的文章链接
 def parse_page_url(url):
     result = []
-    html = get_html(url)
+    global ip_thread
+    html = ip_thread.get_html(url)
     if html == "":
         print("error in parse_page_url: " + url)
         return result
@@ -165,7 +130,11 @@ def parse_page(url, key):
     result.append((key, tmp_result))  # 第一页的结果加进去
 
     try:
-        html = get_html(url)
+        global ip_thread
+        html = ip_thread.get_html(url)
+        if html == "":
+            print("error in parse_page: " + url)
+            return result
         html = etree.HTML(html)
         total_page = int(html.xpath('//button[@class="pagination-btn"]')[0].text)
     except Exception as e:
@@ -230,7 +199,7 @@ def main(key_list):
     lock = threading.Lock()
 
     i = 0
-    step = 1
+    step = 4
     while i < len(key_list):
         last = min(i + step, len(key_list))
         page_thread = []
@@ -244,19 +213,10 @@ def main(key_list):
 
         i = i + step
 
-    # page_thread = []
-    # for key in key_list:
-    #     thread = ThreadCrawl(start_url.format(key, 1), key, url_list, lock)
-    #     thread.start()
-    #     page_thread.append(thread)
-    #
-    # for thread in page_thread:
-    #     thread.join()
-
     print(len(url_list))
 
     parse_thread = []
-    for i in range(8):
+    for i in range(4):
         thread = ThreadParse(url_list, lock)
         thread.start()
         parse_thread.append(thread)
@@ -264,21 +224,20 @@ def main(key_list):
     for thread in parse_thread:
         thread.join()
 
-    global f
-    f.close()
+    global ip_thread
+    ip_thread.stop()
+    ip_thread.join()
+    connection.close()
     print("done")
 
 
 if __name__ == "__main__":
-    # key_list = ["Spring Cloud Config"]
+    global ip_thread
+    ip_thread = GetIP.IPCrawler(16)
+    ip_thread.start()
+    time.sleep(30)
+
     key_list = ["Spring Cloud Config", "Spring Cloud Bus", "Eureka", "Hystrix", "Zuul", "Archaius", "Consul", "Spring Cloud for Cloud Foundry", "Spring Cloud Sleuth", "Spring Cloud Data Flow", "Spring Cloud Security", "Spring Cloud Zookeeper", "Spring Cloud Stream", "Spring Cloud CLI", "Ribbon", "Turbine", "Feign", "Spring Cloud Task", "Spring Cloud Connectors", "Spring Cloud Cluster", "Spring Cloud Starters"]
     sec_key_list = ["maven", "MySQL","Spring Boot", "Spring Security", "Spring Session", "MongoDB","Redis","RESTful API","OAuth","Token Authentication","JWT","RabbitMQ","Solr","Elasitic search","docker","docker-compose","k8s","Apache","Nginx","Tomcat","Websockets","GraphQL","Neo4j","OrientDB"]
     key_list.extend(sec_key_list)
     main(key_list)
-    # parse_content(url, "Spring cloud")
-    # parse_page_url(url)
-    # result = parse_page(get_html(url), "Spring+cloud")
-    # print(len(result))
-    # url = "https://www.bilibili.com/video/av56799177?from=search&seid=865120776882731184"
-    # key = "spring cloud"
-    # parse_content(url, "Spring cloud")

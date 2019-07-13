@@ -123,7 +123,9 @@ def parse_page(url, key):
     try:
         global ip_thread
         html = ip_thread.get_html(url, True)
-        # html = get_html(url)
+        if html == "":
+            print("error in parse_page: " + url)
+            return result
         html = etree.HTML(html)
         span = html.xpath('//span[@class="page-nav"]')[0]
         a_list = span.xpath('./a/@page_num')
@@ -193,7 +195,7 @@ def main(key_list):
     lock = threading.Lock()
 
     i = 0
-    step = 1
+    step = 4
     while i < len(key_list):
         last = min(i + step, len(key_list))
         page_thread = []
@@ -221,6 +223,7 @@ def main(key_list):
     global ip_thread
     ip_thread.stop()
     ip_thread.join()
+    connection.close()
     print("done")
 
 

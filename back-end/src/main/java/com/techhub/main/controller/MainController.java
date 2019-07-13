@@ -37,43 +37,67 @@ public class MainController {
     @GetMapping("/search")
     public ResponseData search(@RequestParam("key") String key, @RequestParam("catalog") int catalog, @RequestParam("page") int page, @RequestParam("size") int size) {
         log.info("in search");
-//        map.put("fl", "store_book_id");
-
-        Set<Info> result = new HashSet<>();
 
         HashMap<String, String> titleMap = new HashMap<>();
-        titleMap.put("rows", String.valueOf(size));
-        titleMap.put("start", String.valueOf((page - 1) * size));
+        titleMap.put("rows", "200"); // 默认只找200个
+//        titleMap.put("start", String.valueOf((page - 1) * size));
+        titleMap.put("fl", "*, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
             titleMap.put("q", "title:" + key);
         } else {
             titleMap.put("q", "title:" + key + " AND catalog:" + catalog);
         }
-        Set<Info> titleResult = searchAndReturn(titleMap);
+        List<Info> titleResult = searchAndReturn(titleMap, 0.6);
 
 
         HashMap<String, String> contentMap = new HashMap<>();
-        contentMap.put("rows", String.valueOf(size));
-        contentMap.put("start", String.valueOf((page - 1) * size));
+        contentMap.put("rows", "200"); // 默认只找200个
+//        contentMap.put("start", String.valueOf((page - 1) * size));
+        contentMap.put("fl", "*, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
             contentMap.put("q", "title:" + key);
         } else {
             contentMap.put("q", "title:" + key + " AND catalog:" + catalog);
         }
-        Set<Info> contentResult = searchAndReturn(contentMap);
+        List<Info> contentResult = searchAndReturn(contentMap, 0.4);
 
-        result.addAll(titleResult);
-        result.addAll(contentResult);
+        List<Info> result = new ArrayList<>(titleResult);
+        for (Info tmp: contentResult) {
+            int index = result.indexOf(tmp);
+            if (index == -1) {
+                result.add(tmp);
+            } else {
+                Info existInfo =  result.get(index);
+                existInfo.setScore(existInfo.getScore() + tmp.getScore());
+            }
+        }
 
+        result.sort((info1, info2) -> info1.getScore() > info2.getScore() ? 1 : (info1.getScore() < info2.getScore()) ? -1 : 0);
+
+        List<Info> real_result = new ArrayList<>();
+
+        for (int i=(page-1)*size;i<result.size();i+=size) {
+            for (int j=i;j<result.size() && j<i+size;j++) {
+                real_result.add(result.get(j));
+            }
+        }
 
         ResponseData responseData = ResponseData.ok();
-        responseData.putDataValue("result", result);
+        responseData.putDataValue("result", real_result);
+        responseData.putDataValue("total", result.size());
         return responseData;
     }
 
-    private Set<Info> searchAndReturn(HashMap<String, String> map) {
+    @GetMapping("/getAllTag")
+    public ResponseData getAllTag(@RequestParam("key") String key, @RequestParam("page") int page, @RequestParam("size") int size) {
+
+        return null;
+    }
+
+    // help function
+    private List<Info> searchAndReturn(HashMap<String, String> map, double rate) {
         SolrDocumentList solrDocumentList = solrJClient.query(map, coreName);
-        Set<Info> result = new HashSet<>();
+        List<Info> result = new ArrayList<>();
         if (solrDocumentList == null) {
             return result;
         }
@@ -89,10 +113,12 @@ public class MainController {
             String source = (String) i.getFieldValue("source");
             String date = (String) i.getFieldValue("date");
             String author = (String) i.getFieldValue("author");
-            Info info = new Info(_id, title, summary, url, tags, _catalog, content, source, date, author);
+            Double score = (Double)  i.getFieldValue("score") * rate;
+            Info info = new Info(_id, title, summary, url, tags, _catalog, content, source, date, author, score);
             result.add(info);
         }
 
         return result;
     }
+
 }

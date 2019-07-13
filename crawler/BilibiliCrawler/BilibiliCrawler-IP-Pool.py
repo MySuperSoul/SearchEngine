@@ -136,7 +136,13 @@ def parse_page(url, key):
             print("error in parse_page: " + url)
             return result
         html = etree.HTML(html)
-        total_page = int(html.xpath('//button[@class="pagination-btn"]')[0].text)
+
+        page_list = html.xpath('//button[contains(@class,"pagination-btn")]')
+        if len(page_list) == 0:
+            print("没有内容: " + url)
+            return result
+        else:
+            total_page = int(page_list[-1].text)
     except Exception as e:
         print("在得到total page的时候发生错误: " + url)
         return result

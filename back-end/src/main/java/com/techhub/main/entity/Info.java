@@ -25,6 +25,7 @@ public class Info {
     private String source; // 来源
     private String date; // 发布日期
     private String author; // 作者
+    private Double score; // 相关性评分
 
     @Override
     public int hashCode() {

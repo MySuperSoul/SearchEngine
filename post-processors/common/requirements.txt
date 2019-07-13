@@ -1,2 +1,3 @@
 jieba
 simhash
+textrank4zh

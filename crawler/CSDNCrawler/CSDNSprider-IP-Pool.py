@@ -80,15 +80,14 @@ def parse_content(url, key):
     while retry > 0:
         try:
             collection.insert_one(document=item)
-            break
+            print("ok")
+            return
         except Exception as e:
             time.sleep(3)
             retry = retry - 1
     else:
         print("mongodb 插入超时")
         return
-
-    print("ok")
 
 
 # 每页爬下文章链接，返回这页的文章链接

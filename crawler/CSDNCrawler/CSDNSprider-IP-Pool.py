@@ -78,7 +78,16 @@ def parse_content(url, key):
         return
     item["tags"] = [key, ]
     # print(item)
-    collection.insert_one(document=item)
+    retry = 5
+    while retry > 0:
+        try:
+            collection.insert_one(document=item)
+        except:
+            time.sleep(3)
+            retry = retry - 1
+    else:
+        print("mongodb 插入超时")
+        return
 
     print("ok")
 

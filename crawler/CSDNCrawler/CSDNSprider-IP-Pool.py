@@ -68,6 +68,8 @@ def parse_content(url, key):
         item["source"] = "CSDN"
         content = ""
         for i in tmp_html.xpath('//p'):
+            if i.text is None:
+                continue
             tmp = i.text.strip()
             if tmp != 0:
                 content = content + " " + tmp

@@ -138,7 +138,7 @@ def parse_page(url, key):
         html = etree.HTML(html)
         total_page = int(html.xpath('//button[@class="pagination-btn"]')[0].text)
     except Exception as e:
-        print("在得到total page的时候发生错误")
+        print("在得到total page的时候发生错误: " + url)
         return result
 
     for i in range(2, total_page + 1):

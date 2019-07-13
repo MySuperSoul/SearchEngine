@@ -80,7 +80,8 @@ def parse_content(url, key):
     while retry > 0:
         try:
             collection.insert_one(document=item)
-        except:
+            break
+        except Exception as e:
             time.sleep(3)
             retry = retry - 1
     else:

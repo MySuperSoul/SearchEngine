@@ -86,7 +86,6 @@ def parse_content(url, key):
         print("解析最后: " + url)
         return
 
-    collection.insert_one(document=item)
     retry = 5
     while retry > 0:
         try:

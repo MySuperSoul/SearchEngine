@@ -21,11 +21,6 @@ collection = db["CSDN"]
 
 session = requests.Session()
 
-# file_name = 1
-# f = open("./CSDN/" + str(file_name), "w")
-# total_num = 0
-# file_lock = threading.Lock()
-
 
 # 根据url得到html
 def get_html(url):
@@ -67,9 +62,9 @@ def parse_content(url, key):
         item["date"] = tmp_html.xpath('//span[@class="time"]')[0].text
         item["source"] = "CSDN"
         content = ""
-        for i in tmp_html.xpath('//p'):
+        for i in tmp_html.xpath('//article//p'):
             if i.text is None:
-                continue
+                continue 
             tmp = i.text.strip()
             if tmp != 0:
                 content = content + " " + tmp
@@ -84,20 +79,6 @@ def parse_content(url, key):
     item["tags"] = [key, ]
     # print(item)
     collection.insert_one(document=item)
-
-    # global file_lock
-    # global total_num
-    # global file_name
-    # global f
-    # if file_lock.acquire():
-    #     f.writelines(str(item) + "\n")
-    #     total_num = total_num + 1
-    #     if total_num == 1000:
-    #         f.close()
-    #         file_name = file_name + 1
-    #         f = open("./CSDN/" + str(file_name), "w")
-    #
-    #     file_lock.release()
 
     print("ok")
 

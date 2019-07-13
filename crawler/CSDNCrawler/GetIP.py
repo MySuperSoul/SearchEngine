@@ -351,7 +351,7 @@ class IPCrawler(threading.Thread):
 
     def update_ip_value(self, ip):
         if (not self.update_flag) and self.ip_map_lock.acquire():  # 如果正在更新，就放弃更新map。否则就获得锁，更新map
-            if self.ip_map.get(ip, default=None) is None:
+            if self.ip_map.get(ip, None) is None:
                 return
             if self.ip_map[ip] > 0:
                 self.ip_map[ip] = self.ip_map[ip] - 1

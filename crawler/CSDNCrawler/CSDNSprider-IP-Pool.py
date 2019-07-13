@@ -182,7 +182,6 @@ class ThreadParse(threading.Thread):
 
 
 def main(key_list):
-
     url_list = []
     lock = threading.Lock()
 
@@ -212,12 +211,10 @@ def main(key_list):
     for thread in parse_thread:
         thread.join()
 
-    global f
-    f.close()
-    print("done")
     global ip_thread
     ip_thread.stop()
     ip_thread.join()
+    print("done")
 
 
 if __name__ == "__main__":

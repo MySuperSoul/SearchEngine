@@ -15,11 +15,9 @@ headers = {
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
            }
 
-connection = pymongo.MongoClient('mongodb://49.234.90.146:37017,49.234.90.146:47017,49.234.90.146:57017', connect=False)
+connection = pymongo.MongoClient('mongodb://49.234.90.146:37017,49.234.90.146:47017,49.234.90.146:57017')
 db = connection["TechHub"]
 collection = db["CSDN"]
-
-session = requests.Session()
 
 
 # 根据url得到html

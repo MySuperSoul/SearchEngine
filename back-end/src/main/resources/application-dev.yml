@@ -1,6 +1,6 @@
 server:
   port:
-    7000
+    9999
 
 debug:
   true

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.techhub.main.dao.InfoDao">
+
+    <select id="getAllTags" resultType="String">
+        select distinct tag from infos
+    </select>
+
+    <select id="getTag" resultType="com.techhub.main.entity.Infos">
+        select `tag`, `_id` from infos where tag = #{tag}
+    </select>
+
+    <select id="getTagCount" resultType="Integer">
+        select count(*) from infos where tag = #{tag}
+    </select>
+
+</mapper>

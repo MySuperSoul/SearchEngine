@@ -9,7 +9,23 @@ spring:
   application:
     name: techhub
 
+  datasource:
+      name: test
+      url: jdbc:mysql://10.214.213.42/techhub
+      username: root
+      password: root
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    mongodb:
+      uri: mongodb://49.234.90.146:37017,49.234.90.146:47017,49.234.90.146:57017/TechHub?replicaSet=rs
+
 
 SolrJ:
   url: http://49.234.90.146:8983/solr
   coreName: TechHub
+
+mybatis:
+    mapperLocations: classpath:mapper/*.xml
+    typeAliasesPackage: com.techhub.main.entity

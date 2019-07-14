@@ -39,7 +39,7 @@ http://10.214.213.43:9999/search?key=Docker&catalog=2&page=1&size=10&delta=0
 2. page，页数，从1开始
 3. size，每页的大小
 ### example
-http://10.214.213.43:9999/getAllTag?page=1&size=10key=
+http://10.214.213.43:9999/getAllTag?page=1&size=10&key=
 ### 返回包格式
 1. 当key为空时
 ```json
@@ -68,14 +68,14 @@ http://10.214.213.43:9999/getAllTag?page=1&size=10key=
 			{
 				_id: "",
 				title: "",
-        summary: "",
-        url: "",
-        tags: ["", "", ]
-        catalog: 2,
-        content: ""，
-        source: "",
-        date: "",
-        author: "",
+				summary: "",
+				url: "",
+				tags: ["", "", ]
+				catalog: 2,
+				content: ""，
+				source: "",
+				date: "",
+				author: "",
 			},
 		]
 	}

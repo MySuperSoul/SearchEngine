@@ -5,7 +5,7 @@ from pyhanlp import *
 from snownlp import SnowNLP
 
 tr4w = TextRank4Sentence()
-config = MongoConfig(database_name='TechHub', collection_name='jianshu')
+config = MongoConfig(database_name='TechHub', collection_name='CSDN')
 cursor = config.GetMongoCursor()
 
 for document in cursor.find().limit(20):

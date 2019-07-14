@@ -11,23 +11,23 @@ http://10.214.213.43:9999/search?key=Docker&catalog=2&page=1&size=10&delta=0
 ### 返回包格式
 ```json
 {
-	message: "",
-	code: 200,
-	data: {
-		total: 10,
-		result: [
+	"message": "",
+	"code": 200,
+	"data": {
+		"total": 10,
+		"result": [
 			{
-				_id: "",
-				title: "",
-        summary: "",
-        url: "",
-        tags: ["", "", ]
-        catalog: 2,
-        content: ""，
-        source: "",
-        date: "",
-        author: "",
-        score: 1.1,
+				"_id": "",
+				"title": "",
+				"summary": "",
+				"url": "",
+				"tags": ["", "", ],
+				"catalog": 2,
+				"content": "",
+				"source": "",
+				"date": "",
+				"author": "",
+				"score": 1.1,
 			},
 		]
 	}
@@ -39,19 +39,19 @@ http://10.214.213.43:9999/search?key=Docker&catalog=2&page=1&size=10&delta=0
 2. page，页数，从1开始
 3. size，每页的大小
 ### example
-http://10.214.213.43:9999/getAllTag?page=1&size=10key=
+http://10.214.213.43:9999/getAllTag?page=1&size=10&key=
 ### 返回包格式
 1. 当key为空时
 ```json
 {
-	message: "",
-	code: 200,
-	data: {
-		total: 10,
-		result: [
+	"message": "",
+	"code": 200,
+	"data": {
+		"total": 10,
+		"result": [
 			{
-				tag: "",
-				count: 22
+				"tag": "",
+				"count": 22
 			},
 		]
 	}
@@ -60,22 +60,22 @@ http://10.214.213.43:9999/getAllTag?page=1&size=10key=
 2. 当key不为空时
 ```json
 {
-	message: "",
-	code: 200,
-	data: {
-		total: 10,
-		result: [
+	"message": "",
+	"code": 200,
+	"data": {
+		"total": 10,
+		"result": [
 			{
-				_id: "",
-				title: "",
-        summary: "",
-        url: "",
-        tags: ["", "", ]
-        catalog: 2,
-        content: ""，
-        source: "",
-        date: "",
-        author: "",
+				"_id": "",
+				"title": "",
+				"summary": "",
+				"url": "",
+				"tags": ["", "", ],
+				"catalog": 2,
+				"content": "",
+				"source": "",
+				"date": "",
+				"author": "",
 			},
 		]
 	}

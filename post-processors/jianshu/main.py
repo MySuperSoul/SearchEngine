@@ -14,7 +14,7 @@ if __name__ == '__main__':
     cursor = config.GetMongoCursor()
     count = 0
 
-    for document in cursor.find():
+    for document in cursor.find({}, no_cursor_timeout=True):
         content = document['content']
         url = document['url']
         summary = summary_handler.GetSummary(content)

@@ -100,17 +100,14 @@ public class MainController {
 
         result.sort((info1, info2) -> info1.getScore() > info2.getScore() ? 1 : (info1.getScore() < info2.getScore()) ? -1 : 0);
 
-        List<Info> real_result = new ArrayList<>();
-
         // 多于100，取前100
         if (result.size() > 100) {
             result = result.subList(0, 100);
         }
 
-        for (int i=(page-1)*size;i<result.size();i+=size) {
-            for (int j=i;j<result.size() && j<i+size;j++) {
-                real_result.add(result.get(j));
-            }
+        List<Info> real_result = new ArrayList<>();
+        for (int i=(page-1)*size ; i<result.size() && i<page+size ; i++) {
+            real_result.add(result.get(i));
         }
 
         long fourth = System.currentTimeMillis() / 1000;

@@ -106,7 +106,7 @@ public class MainController {
         }
 
         List<Info> real_result = new ArrayList<>();
-        for (int i=(page-1)*size ; i<result.size() && i<page+size ; i++) {
+        for (int i=(page-1)*size ; i<result.size() && i<page*size ; i++) {
             real_result.add(result.get(i));
         }
 

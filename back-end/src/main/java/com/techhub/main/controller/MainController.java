@@ -49,32 +49,35 @@ public class MainController {
     @GetMapping("/search")
     public ResponseData search(@RequestParam("key") String key, @RequestParam("catalog") int catalog, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("delta") int delta) {
         log.info("in search");
-
+        long currentTimestamps = System.currentTimeMillis() / 1000;
+        long first = System.currentTimeMillis() / 1000;
         HashMap<String, String> titleMap = new HashMap<>();
-        titleMap.put("rows", "200"); // 默认只找200个
-//        titleMap.put("start", String.valueOf((page - 1) * size));
-        titleMap.put("fl", "*, score");
+        titleMap.put("rows", "100"); // 默认只找100个
+        titleMap.put("fl", "_id, title, summary, url, tags, catalog, source, date, author, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
             titleMap.put("q", "title:" + key);
         } else {
             titleMap.put("q", "title:" + key + " AND catalog:" + catalog);
         }
-        List<Info> titleResult = searchAndReturn(titleMap, 0.6);
+        List<Info> titleResult = searchAndReturn(titleMap, 0.6f);
+        long second = System.currentTimeMillis() / 1000;
+        log.info("第一次solr查询所用时间: " + String.valueOf(second - first));
 
 
         HashMap<String, String> contentMap = new HashMap<>();
-        contentMap.put("rows", "200"); // 默认只找200个
-//        contentMap.put("start", String.valueOf((page - 1) * size));
-        contentMap.put("fl", "*, score");
+        contentMap.put("rows", "100"); // 默认只找100个
+        contentMap.put("fl", "_id, title, summary, url, tags, catalog, source, date, author, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
-            contentMap.put("q", "title:" + key);
+            contentMap.put("q", "content:" + key);
         } else {
-            contentMap.put("q", "title:" + key + " AND catalog:" + catalog);
+            contentMap.put("q", "content:" + key + " AND catalog:" + catalog);
         }
-        List<Info> contentResult = searchAndReturn(contentMap, 0.4);
+        List<Info> contentResult = searchAndReturn(contentMap, 0.4f);
+        long third = System.currentTimeMillis() / 1000;
+        log.info("第二次solr查询所用时间: " + String.valueOf(third - second));
+
 
         List<Info> result = new ArrayList<>(titleResult);
-        long currentTimestamps = System.currentTimeMillis() / 1000;
         for (Info tmp: contentResult) {
             int index = result.indexOf(tmp);
             if (index == -1) {
@@ -99,11 +102,19 @@ public class MainController {
 
         List<Info> real_result = new ArrayList<>();
 
+        // 多于100，取前100
+        if (result.size() > 100) {
+            result = result.subList(0, 100);
+        }
+
         for (int i=(page-1)*size;i<result.size();i+=size) {
             for (int j=i;j<result.size() && j<i+size;j++) {
                 real_result.add(result.get(j));
             }
         }
+
+        long fourth = System.currentTimeMillis() / 1000;
+        log.info("总共所用时间: " + String.valueOf(fourth - first));
 
         ResponseData responseData = ResponseData.ok();
         responseData.putDataValue("result", real_result);
@@ -113,45 +124,34 @@ public class MainController {
 
     @GetMapping("/getAllTag")
     public ResponseData getAllTag(@RequestParam("key") String key, @RequestParam("page") int page, @RequestParam("size") int size) {
+        log.info("in getAllTag");
+        log.info(key);
+        log.info(String.valueOf(page));
+        log.info(String.valueOf(size));
         ResponseData responseData = ResponseData.ok();
         if (key.length() == 0) {
-            List<String> tags = infoService.getAllTags();
+            Integer total = infoService.getAllTagsCount();
+            List<TagCountMap> tags = infoService.getAllTags(page, size);
 
-            List<TagCountMap> list = new ArrayList<>();
-
-            for (int i=(page-1)*size;i<tags.size();i+=size) {
-                for (int j=i;j<tags.size() && j<i+size;j++) {
-                    list.add(new TagCountMap(tags.get(j), infoService.getTagCount(tags.get(j))));
-                }
-            }
-
-            list.sort((i, j) -> i.getCount() > j.getCount() ? 1 : (i.getCount() < j.getCount()) ? -1 : 0);
-
-            responseData.putDataValue("result", list);
-            responseData.putDataValue("total", tags.size());
+            responseData.putDataValue("result", tags);
+            responseData.putDataValue("total", total);
             return responseData;
-        } else{
-            List<Infos> list = infoService.getTag(key);
+        } else {
+            Integer total = infoService.getTagCount(key);
+            List<Infos> list = infoService.getTag(key, (page - 1) * size, size);
             List<MongoDoc> result = new ArrayList<>();
             for (Infos i: list) {
                 result.add(mongoService.getDocById(i.get_id()));
             }
 
-            List<MongoDoc> real_result = new ArrayList<>();
-
-            for (int i=(page-1)*size;i<result.size();i+=size) {
-                for (int j=i;j<result.size() && j<i+size;j++) {
-                    real_result.add(result.get(j));
-                }
-            }
-            responseData.putDataValue("result", real_result);
-            responseData.putDataValue("total", result.size());
+            responseData.putDataValue("result", result);
+            responseData.putDataValue("total", total);
             return responseData;
         }
     }
 
     // help function
-    private List<Info> searchAndReturn(HashMap<String, String> map, double rate) {
+    private List<Info> searchAndReturn(HashMap<String, String> map, float rate) {
         SolrDocumentList solrDocumentList = solrJClient.query(map, coreName);
         List<Info> result = new ArrayList<>();
         if (solrDocumentList == null) {
@@ -169,7 +169,7 @@ public class MainController {
             String source = (String) i.getFieldValue("source");
             String date = (String) i.getFieldValue("date");
             String author = (String) i.getFieldValue("author");
-            Double score = (Double)  i.getFieldValue("score") * rate;
+            Float score = (Float)  i.getFieldValue("score") * rate;
             Info info = new Info(_id, title, summary, url, tags, _catalog, content, source, date, author, score);
             result.add(info);
         }

@@ -3,12 +3,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.techhub.main.dao.InfoDao">
 
-    <select id="getAllTags" resultType="String">
-        select distinct tag from infos
+    <select id="getAllTags" resultType="com.techhub.main.entity.TagCountMap">
+        select tag, count(*) as `count` from infos group by tag order by `count` desc limit #{page}, #{size}
+    </select>
+
+    <select id="getAllTagsCount" resultType="Integer">
+        select count(*) from (select distinct tag from infos) as tag_count
     </select>
 
     <select id="getTag" resultType="com.techhub.main.entity.Infos">
-        select `tag`, `_id` from infos where tag = #{tag}
+        select `tag`, `_id` from infos where tag = #{tag} limit #{page}, #{size}
     </select>
 
     <select id="getTagCount" resultType="Integer">

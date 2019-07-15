@@ -2,6 +2,7 @@ package com.techhub.main.service.impl;
 
 import com.techhub.main.dao.InfoDao;
 import com.techhub.main.entity.Infos;
+import com.techhub.main.entity.TagCountMap;
 import com.techhub.main.service.InfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +28,23 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public List<String> getAllTags() {
+    public List<TagCountMap> getAllTags(int page, int size) {
         log.info("in getAllTags");
-        return infoDao.getAllTags();
+        return infoDao.getAllTags(page, size);
     }
 
     @Override
-    public List<Infos> getTag(String tag) {
+    public Integer getAllTagsCount() {
+        log.info("in getAllTagsCount");
+        Integer result = infoDao.getAllTagsCount();
+        log.info("count: " + result);
+        return result;
+    }
+
+    @Override
+    public List<Infos> getTag(String tag, int page, int size) {
         log.info("in getTag");
-        return infoDao.getTag(tag);
+        return infoDao.getTag(tag, page, size);
     }
 
     @Override

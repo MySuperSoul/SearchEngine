@@ -1,5 +1,0 @@
-scrapy
-selenium
-requests
-lxml
-pymongo

@@ -1,6 +1,0 @@
-jieba
-simhash
-textrank4zh
-pyhanlp
-snownlp
-pymongo

@@ -1,0 +1,9 @@
+scrapy
+selenium
+requests
+lxml
+pymongo
+jieba
+simhash
+textrank4zh
+snownlp

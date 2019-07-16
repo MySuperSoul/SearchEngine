@@ -77,8 +77,11 @@ public class MainController {
         log.info("第二次solr查询所用时间: " + String.valueOf(third - second));
 
 
-        List<Info> result = new ArrayList<>(titleResult);
-        for (Info tmp: contentResult) {
+        List<Info> result = new ArrayList<>();
+        
+        List<Info> tmp_result = new ArrayList<>(titleResult);
+        tmp_result.addAll(contentResult);
+        for (Info tmp: tmp_result) {
             int index = result.indexOf(tmp);
             if (index == -1) {
                 if (delta == 0) {
@@ -175,7 +178,7 @@ public class MainController {
     }
 
     private long toTimeStamp(String date) {
-        if (date.length() == 0) {
+        if (date == null || date.length() == 0) {
             return 0;
         }
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");

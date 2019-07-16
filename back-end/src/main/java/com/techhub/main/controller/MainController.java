@@ -55,9 +55,9 @@ public class MainController {
         titleMap.put("rows", "100"); // 默认只找100个
         titleMap.put("fl", "_id, title, summary, url, tags, catalog, source, date, author, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
-            titleMap.put("q", "title:" + key);
+            titleMap.put("q", "title:\"" + key + "\"~10");
         } else {
-            titleMap.put("q", "title:" + key + " AND catalog:" + catalog);
+            titleMap.put("q", "title:\"" + key + "\"~10" + " AND catalog:" + catalog);
         }
         List<Info> titleResult = searchAndReturn(titleMap, 0.6f);
         long second = System.currentTimeMillis() / 1000;
@@ -68,9 +68,9 @@ public class MainController {
         contentMap.put("rows", "100"); // 默认只找100个
         contentMap.put("fl", "_id, title, summary, url, tags, catalog, source, date, author, score");
         if (catalog == -1) { // 直接对题目和正文进行搜索
-            contentMap.put("q", "content:" + key);
+            contentMap.put("q", "content:\"" + key + "\"~10");
         } else {
-            contentMap.put("q", "content:" + key + " AND catalog:" + catalog);
+            contentMap.put("q", "content:\"" + key + "\"~10" + " AND catalog:" + catalog);
         }
         List<Info> contentResult = searchAndReturn(contentMap, 0.4f);
         long third = System.currentTimeMillis() / 1000;
@@ -78,7 +78,7 @@ public class MainController {
 
 
         List<Info> result = new ArrayList<>();
-        
+
         List<Info> tmp_result = new ArrayList<>(titleResult);
         tmp_result.addAll(contentResult);
         for (Info tmp: tmp_result) {

@@ -5,8 +5,25 @@
 *.pyc
 
 # .idea
+crawler/.idea
+crawler/CrawlerUtils/.idea
 crawler/JianShuCrawler/.idea
 crawler/ZhiHuCrawler/.idea
+crawler/GithubDemoCrawler/.idea
+crawler/STOCrawler/.idea
+crawler/iteyecrawler/.idea
+crawler/BilibiliCrawler/.idea
+crawler/CSDNCrawler/.idea
+
+post-processors/.idea
+
+# DS_STORE
+.DS_Store
+*/.DS_Store
+
+# chrome driver
+crawler/iteyecrawler/chromedriver
+crawler/iteyecrawler/zhihucrawler/chromedriver
 
 # Log file
 *.log

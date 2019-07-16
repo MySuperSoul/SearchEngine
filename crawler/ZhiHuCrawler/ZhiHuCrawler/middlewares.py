@@ -8,6 +8,7 @@
 from scrapy import signals
 from scrapy.http import HtmlResponse, Response
 from .driver import zhihu_driver
+from lxml import etree
 import requests
 import json
 
@@ -80,29 +81,48 @@ class ZhihucrawlerDownloaderMiddleware(object):
             response = HtmlResponse(url=url, request=request, body=content, encoding='utf-8')
         else:
             if key == 'content_zhuanlan':
-                token = request.meta['token']
-                fields = ','.join(['text', ])
-                params = {
-                    'token': token,
-                    'url': url,
-                    'fields': fields
-                }
+                content = {}
+                driver = zhihu_driver.GetValidDriverForPage(url, key)
+                title = driver.find_element_by_xpath('//h1[@class="Post-Title"]').text
+                content['title'] = title
+                date = driver.find_element_by_xpath('//div[@class="ContentItem-time"]').text.split(' ')[1]
+                content['date'] = date
+                p_tags = driver.find_elements_by_xpath('//div[@class="Post-RichTextContainer"]//p')
+                text = ''
+                for p in p_tags:
+                    if p.text == None or p.text == '':
+                        continue
+                    else:
+                        text += p.text
+                content['text'] = text
 
-                result = requests.get('http://api.url2io.com/article', params=params)
-                content = result.json()
-                author = zhihu_driver.GetValidDriverForPage(url, key).find_element_by_xpath(
+                author = driver.find_element_by_xpath(
                     '//div[@class="AuthorInfo-content"]//a[@class="UserLink-link"]'
                 ).text
+                tags_tags = driver.find_elements_by_xpath(
+                    '//div[@class="Tag Topic"]//div[@class="Popover"]/div'
+                )
+                tags = []
+                for tag in tags_tags: tags.append(tag.text)
+                content['tags'] = tags
             else:
                 driver = zhihu_driver.GetValidDriverForPage(url, key)
                 p_tags = driver.find_elements_by_xpath('//p')
                 text = ''
                 for p in p_tags:
-                    text += p.text
+                    if p.text == None or p.text == '':
+                        continue
+                    else:
+                        text += p.text
                 content = {}
                 content['text'] = text
                 title_tag = driver.find_element_by_xpath('//div[@class="QuestionHeader"]//h1[@class="QuestionHeader-title"]')
                 content['title'] = title_tag.text
+
+                tags_tags = driver.find_elements_by_xpath('//div[@class="Tag QuestionTopic"]//div[@class="Popover"]/div')
+                tags = []
+                for tag in tags_tags: tags.append(tag.text)
+                content['tags'] = tags
                 content['date'] = ''
                 author = ''
             content['author'] = author

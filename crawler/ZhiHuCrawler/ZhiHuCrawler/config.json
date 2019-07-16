@@ -1,5 +1,5 @@
 {
-  "keywords" : ["docker", "Django"],
+  "keywords" : ["maven", "MySQL","Spring Boot", "Spring Security", "Spring Session", "MongoDB","Redis","RESTful API","OAuth","Token Authentication","JWT","RabbitMQ","Solr","Elasitic search","docker","docker-compose","k8s","Apache","Nginx","Tomcat","Websockets","GraphQL","Neo4j","OrientDB"],
   "token": "BLIM5H6rTVW2hNQ33C8nFA",
   "catalog" : 2,
   "source" : "知乎",
@@ -8,5 +8,5 @@
   "MONGO_PORT_2" : 47017,
   "MONGO_PORT_3" : 57017,
   "MONGO_DATABASE" : "TechHub",
-  "MONGO_COLLECTION" : "TechHub"
+  "MONGO_COLLECTION" : "zhihu"
 }

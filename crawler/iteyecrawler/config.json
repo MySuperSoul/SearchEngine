@@ -1,0 +1,8 @@
+{
+  "MONGO_HOST" : "49.234.90.146",
+  "MONGO_PORT_1" : 37017,
+  "MONGO_PORT_2" : 47017,
+  "MONGO_PORT_3" : 57017,
+  "MONGO_DATABASE" : "TechHub",
+  "MONGO_COLLECTION" : "TechHub"
+}

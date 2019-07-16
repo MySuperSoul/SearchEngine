@@ -1,12 +1,12 @@
 import scrapy
 import json
+import os
 from scrapy import signals
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy.http import Request
 from ..driver import zhihu_driver
-from bs4 import BeautifulSoup
 from lxml import etree
-from ..utils import Catalog
+from CrawlerUtils.Catalog import DocCatalog
 from ..items import ZhihucrawlerItem
 
 class ZhiHuSpider(scrapy.Spider):
@@ -14,7 +14,8 @@ class ZhiHuSpider(scrapy.Spider):
     start_url = 'https://www.zhihu.com/search?type=content&q=%s'
 
     def __init__(self):
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         dispatcher.connect(self.SpiderStopped, signals.engine_stopped)
@@ -59,12 +60,12 @@ class ZhiHuSpider(scrapy.Spider):
         info_dic['summary'] = ''
         info_dic['url'] = response.url
         if response.meta['key'] == 'content_zhuanlan':
-            info_dic['catalog'] = Catalog.CATALOG_BLOG
+            info_dic['catalog'] = DocCatalog.CATALOG_BLOG
         else:
-            info_dic['catalog'] = Catalog.CATALOG_QA
+            info_dic['catalog'] = DocCatalog.CATALOG_QA
 
         keyword = response.meta['keyword']
-        info_dic['tags'] = [keyword]
+        # info_dic['tags'] = [keyword]
         info_dic['source'] = self.CONFIG['source']
 
         document = ZhihucrawlerItem()

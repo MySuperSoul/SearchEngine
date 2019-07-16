@@ -1,0 +1,7 @@
+class DocCatalog():
+    CATALOG_INTRODUCTION = 0
+    CATALOG_USER_GUIDE = 1
+    CATALOG_BLOG = 2
+    CATALOG_DEMO = 3
+    CATALOG_VIDEO = 4
+    CATALOG_QA = 5

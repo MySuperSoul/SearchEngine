@@ -1,0 +1,12 @@
+{
+  "keywords" : ["Spring Cloud Stream", "Spring Cloud CLI", "Ribbon", "Turbine", "Feign", "Spring Cloud Task",
+  "Spring Cloud Connectors", "Spring Cloud Cluster", "Spring Cloud Starters"],
+  "token": "BLIM5H6rTVW2hNQ33C8nFA",
+  "source" : "Github",
+  "MONGO_HOST" : "49.234.90.146",
+  "MONGO_PORT_1" : 37017,
+  "MONGO_PORT_2" : 47017,
+  "MONGO_PORT_3" : 57017,
+  "MONGO_DATABASE" : "TechHub",
+  "MONGO_COLLECTION" : "github"
+}

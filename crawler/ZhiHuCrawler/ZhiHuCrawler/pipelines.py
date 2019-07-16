@@ -6,10 +6,12 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import json
+import os
 
 class ZhihucrawlerPipeline(object):
     def open_spider(self, spider):
-        with open('config.json', 'r') as cursor:
+        config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.json')
+        with open(config_path, 'r') as cursor:
             self.CONFIG = json.load(cursor)
 
         mongo_url = 'mongodb://{}:{},{}:{},{}:{}'.format(
@@ -17,6 +19,7 @@ class ZhihucrawlerPipeline(object):
             self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_2'],
             self.CONFIG['MONGO_HOST'], self.CONFIG['MONGO_PORT_3'],
         )
+        # mongo_url = 'mongodb://localhost:27017'
 
         self.mongo_client = pymongo.MongoClient(mongo_url)
         self.mongo_db = self.mongo_client[self.CONFIG['MONGO_DATABASE']]

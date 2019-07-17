@@ -6,14 +6,17 @@ import com.techhub.main.service.MongoService;
 import com.techhub.main.solrj.SolrJClient;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.hibernate.validator.constraints.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +29,7 @@ import java.util.*;
  * @modified By：
  */
 @RestController
+@Validated
 public class MainController {
     private static Logger log = LoggerFactory.getLogger(MainController.class);
 
@@ -47,7 +51,11 @@ public class MainController {
 
     // delta 0:所有 1:一天内 2:一周内 3:一月内 4:一年内
     @GetMapping("/search")
-    public ResponseData search(@RequestParam("key") String key, @RequestParam("catalog") int catalog, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("delta") int delta) {
+    public ResponseData search(@RequestParam("key") String key,
+                               @Range(min = -1, max = 5) @RequestParam("catalog") int catalog,
+                               @Min(value = 1) @RequestParam("page") int page,
+                               @Min(value = 1) @RequestParam("size") int size,
+                               @Range(min = 0, max = 4) @RequestParam("delta") int delta) {
         log.info("in search");
         long currentTimestamps = System.currentTimeMillis() / 1000;
         long first = System.currentTimeMillis() / 1000;
@@ -123,7 +131,9 @@ public class MainController {
     }
 
     @GetMapping("/getAllTag")
-    public ResponseData getAllTag(@RequestParam("key") String key, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseData getAllTag(@RequestParam("key") String key,
+                                  @Min(value = 1) @RequestParam("page") int page,
+                                  @Min(value = 1) @RequestParam("size") int size) {
         log.info("in getAllTag");
         log.info(key);
         log.info(String.valueOf(page));

@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 // import Divider from '@material-ui/core/Divider';
 import { Search } from '@material-ui/icons';
 import { withRouter } from 'react-router-dom';
+import MessageBar from './MessageBar';
 
 
 const style = theme => ({
@@ -40,6 +41,8 @@ class SearchBar extends Component {
   state = {
     input: this.props.match.params.input || "",
     catalog: 0, //catalog index, first is 0
+    showMsg: false,
+    msg: "",
   }
 
   handleChange = (field) => (e) => {
@@ -51,7 +54,21 @@ class SearchBar extends Component {
   handleSearch = (e) => {
     e.preventDefault();
     const {input} = this.state;
-    if(input) {
+    if(input.trim().length === 0) {
+      // alert("输入不能为空！");
+      this.setState({
+        showMsg: true,
+        msg: "输入不能为空！",
+        input: ""
+      })
+    } else if(input.length > 20) {
+      // alert("输入不能超过20个字符！");
+      this.setState({
+        showMsg: true,
+        msg: "输入不能超过20个字符！",
+        input: ""
+      })
+    } else {
       this.props.history.push({
         pathname: `/search/query/${input}`,
         query: {
@@ -61,11 +78,18 @@ class SearchBar extends Component {
     }
   }
 
+  handleClose = () => {
+    this.setState({
+      showMsg: false,
+    })
+  }
+
   render() {
     const { classes } = this.props;
-    const { input } = this.state;
+    const { input, showMsg, msg} = this.state;
     return (
-      <div>    
+      <div>
+        {showMsg && <MessageBar show={showMsg} msg={msg} handleClose={this.handleClose} />}
         <form onSubmit={this.handleSearch}>
             <Paper className={classes.searchBar}>
                 {/* <Select

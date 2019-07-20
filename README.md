@@ -18,6 +18,15 @@
 
 <br>
 
+### 相关链接
+
+| 资源 | 链接 |
+| :-: | :-: |
+| 演示视频 | [TechHub视频演示](https://www.youtube.com/watch?v=bfNWVXzNaKM&feature=youtu.be) |
+| 运行网站 | [TechHub](http://49.234.190.100:5000/) |
+
+<br>
+
 ### Contact
 
 > Copyright ©️ 2019, All rights reserved by **Group08**. <br>
